@@ -41,31 +41,37 @@ company can access another's data or exhaust shared resources.
 ### Setup
 
 1. Clone the repository
+
 ```bash
    git clone https://github.com/guillemdiaz/herald.git
    cd herald
 ```
+
 2. Copy the example config and fill in your values
+
 ```bash
    cp src/main/resources/application.yml.example src/main/resources/application.yml
 ```
+
 3. Start the databases
+
 ```bash
    docker compose up -d
 ```
+
 4. Run the application
+
 ```bash
    mvn spring-boot:run
 ```
+
 5. Open Swagger UI at `http://localhost:8080/swagger-ui/index.html`
 
 ### Demo Credentials
 
-The database is pre-seeded with four tenants for demo purposes:
+The database is pre-seeded with two tenants for demo purposes:
 
 | Company           | Email             | Password   |
 |-------------------|-------------------|------------|
 | Stark Industries  | stark@herald.dev  | password   |
-| Oscorp Industries | oscorp@herald.dev | password   |
 | Wayne Enterprises | wayne@herald.dev  | password   |
-| LexCorp           | lex@herald.dev    | password   |
