@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Anyone can log in/register
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/error").permitAll()
                         // Documentation is public
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         // Everything else requires a valid JWT
