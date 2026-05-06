@@ -22,12 +22,13 @@ public class AuthController {
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         log.info("Registering new tenant: {}", request.companyName());
 
-        if (authService.emailExists(request.email())) {
-            return ResponseEntity.badRequest().body("Error: Email already in use");
+        try {
+            String token = authService.register(request);
+            return ResponseEntity.ok(new AuthResponse(token));
+        } catch (IllegalArgumentException e) {
+            // Catches the error thrown by the service
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
-
-        String token = authService.register(request);
-        return ResponseEntity.ok(new AuthResponse(token));
     }
 
     @PostMapping("/login")

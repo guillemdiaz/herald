@@ -27,6 +27,10 @@ public class AuthService {
 
     @Transactional // Ensures database safety
     public String register(RegisterRequest request) {
+        if (tenantRepository.existsByEmail(request.email())) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+
         Tenant tenant = new Tenant();
         tenant.setCompanyName(request.companyName());
         tenant.setEmail(request.email());
