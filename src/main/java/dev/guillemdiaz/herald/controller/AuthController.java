@@ -7,6 +7,7 @@ import dev.guillemdiaz.herald.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,9 @@ public class AuthController {
         } catch (IllegalArgumentException e) {
             // Catches the error thrown by the service
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body("Error: A user with this " +
+                    "email or company name already exists.");
         }
     }
 
