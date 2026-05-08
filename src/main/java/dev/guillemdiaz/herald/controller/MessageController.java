@@ -43,16 +43,11 @@ public class MessageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMessageById(@PathVariable @Min(1) Long id,
+    public ResponseEntity<MessageResponse> getMessageById(@PathVariable @Min(1) Long id,
                                             Principal principal) {
         String email = principal.getName();
         log.info("Fetching message ID: {} for tenant {}", id, email);
-        try {
-            MessageResponse response = messageService.getMessageById(email, id);
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            // If the message belongs to someone else, or doesn't exist
-            return ResponseEntity.status(404).body("{\"error\": \"" + e.getMessage() + "\"}");
-        }
+        MessageResponse response = messageService.getMessageById(email, id);
+        return ResponseEntity.ok(response);
     }
 }

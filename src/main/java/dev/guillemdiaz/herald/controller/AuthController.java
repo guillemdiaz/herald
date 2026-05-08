@@ -7,7 +7,6 @@ import dev.guillemdiaz.herald.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,31 +19,16 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         log.info("Registering new tenant: {}", request.companyName());
-
-        try {
-            String token = authService.register(request);
-            return ResponseEntity.ok(new AuthResponse(token));
-        } catch (IllegalArgumentException e) {
-            // Catches the error thrown by the service
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body("Error: A user with this " +
-                    "email or company name already exists.");
-        }
+        String token = authService.register(request);
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         log.info("Tenant attempting login: {}", request.email());
-
-        try {
-            String token = authService.login(request);
-            return ResponseEntity.ok(new AuthResponse(token));
-        } catch (Exception e) {
-            // Catches bad passwords from the AuthenticationManager
-            return ResponseEntity.status(401).body("Error: Invalid credentials");
-        }
+        String token = authService.login(request);
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }
