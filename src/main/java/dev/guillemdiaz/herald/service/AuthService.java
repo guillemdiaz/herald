@@ -21,10 +21,6 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public boolean emailExists(String email) {
-        return tenantRepository.existsByEmail(email);
-    }
-
     @Transactional // Ensures database safety
     public String register(RegisterRequest request) {
         if (tenantRepository.existsByEmail(request.email())) {
