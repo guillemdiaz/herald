@@ -3,6 +3,8 @@ package dev.guillemdiaz.herald.controller;
 import dev.guillemdiaz.herald.dto.MessageRequest;
 import dev.guillemdiaz.herald.dto.MessageResponse;
 import dev.guillemdiaz.herald.service.MessageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +19,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/messages")
 @RequiredArgsConstructor
+@Tag(name = "Messages", description = "Endpoints for sending SMS and viewing " +
+        "tenant-isolated message history")
 public class MessageController {
 
     private final MessageService messageService;
 
+    @Operation(summary = "Dispatch a new message", description = "Sends an " +
+            "SMS. Rate limited to 5 requests per minute.")
     @PostMapping("/send")
     public ResponseEntity<MessageResponse> send(
             @Valid @RequestBody MessageRequest request,
@@ -33,6 +39,8 @@ public class MessageController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "View message history", description = "Returns a " +
+            "list of all messages sent by the authenticated tenant.")
     @GetMapping("/history")
     public ResponseEntity<List<MessageResponse>> getHistory(Principal principal) {
         String email = principal.getName();
@@ -42,6 +50,8 @@ public class MessageController {
         return ResponseEntity.ok(history);
     }
 
+    @Operation(summary = "Fetch a single message", description = "Retrieves a" +
+            " specific message by ID.")
     @GetMapping("/{id}")
     public ResponseEntity<MessageResponse> getMessageById(@PathVariable @Min(1) Long id,
                                             Principal principal) {
