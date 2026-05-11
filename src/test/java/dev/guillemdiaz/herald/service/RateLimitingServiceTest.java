@@ -14,7 +14,7 @@ class RateLimitingServiceTest {
     void setUp() {
         // Instantiates the real service because it only relies on
         // in-memory logic
-        rateLimitingService = new RateLimitingService();
+        rateLimitingService = new InMemoryRateLimitingService();
     }
 
     @Test
