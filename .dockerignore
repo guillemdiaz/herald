@@ -1,0 +1,15 @@
+target/
+*.jar
+*.war
+.idea/
+.vscode/
+*.iml
+.git/
+.gitignore
+.gitattributes
+.github/
+README.md
+Dockerfile
+docker-compose.yml
+mvnw.cmd
+src/test/
