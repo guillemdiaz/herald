@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: herald-deployment
+  labels:
+    app: herald
+spec:
+  replicas: 2 
+  selector:
+    matchLabels:
+      app: herald
+  template:
+    metadata:
+      labels:
+        app: herald
+    spec:
+      containers:
+      - name: herald 
+        image: ghcr.io/guillemdiaz/herald:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+          - name: SPRING_DATASOURCE_URL
+            value: "jdbc:postgresql://host.minikube.internal:5433/herald"
+          - name: SPRING_DATASOURCE_USERNAME
+            value: "admin"
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: "password"
+          - name: SPRING_DATA_REDIS_HOST
+            value: "host.minikube.internal"
+          - name: SPRING_DATA_REDIS_PORT
+            value: "6379"
+          # Exposed intentionally, just testing
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: herald-secrets
+                key: jwt-secret
+        # Resource requests (guaranteed) and limits (max cap)
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        # Startup probe (gives Spring Boot up to 60s to finish booting)
+        startupProbe:
+          httpGet:
+            path: /v3/api-docs
+            port: 8080
+          failureThreshold: 36
+          periodSeconds: 5
+          timeoutSeconds: 3
+        # Readiness probe (does K8s send traffic to this pod yet?)
+        readinessProbe:
+          httpGet:
+            path: /v3/api-docs 
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        # Liveness probe (is the app deadlocked and needs a restart?)
+        livenessProbe:
+          httpGet:
+            path: /v3/api-docs 
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          timeoutSeconds: 3
+          failureThreshold: 3

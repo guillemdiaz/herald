@@ -13,3 +13,4 @@ Dockerfile
 docker-compose.yml
 mvnw.cmd
 src/test/
+k8s/
