@@ -39,4 +39,6 @@ jobs:
 
       - name: Push Docker Image to GHCR
         if: github.event_name == 'push'
-        run: docker push ghcr.io/${{ github.repository }}:latest
+        run: | 
+          docker push ghcr.io/${{ github.repository }}:latest
+          docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
